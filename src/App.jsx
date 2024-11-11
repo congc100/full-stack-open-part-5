@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -11,6 +12,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [msg, setMsg] = useState(null)
 
   // check login token
   useEffect(() => {
@@ -40,6 +42,7 @@ const App = () => {
       setPassword('')
       console.log('login OK')
     } catch (exception) {
+      notice('error', 'wrong username or password')
       console.log('login failed')
     }
   }
@@ -53,6 +56,7 @@ const App = () => {
     event.preventDefault()
     try {
       await blogService.create({ title, author, url }, user.token)
+      notice('info', `a new blog ${title} by ${author} added`)
       setTitle('')
       setAuthor('')
       setUrl('')
@@ -61,12 +65,21 @@ const App = () => {
       console.log('blogs fetched after create')
     } catch (exception) {
       console.log('create new failed')
+      notice('error', exception.response.data.error)
     }
+  }
+
+  const notice = (type, content) => {
+    setMsg({ type, content })
+    setTimeout(() => {
+      setMsg(null)
+    }, 2000)
   }
 
   return user === null ?
     <div>
       <h2>log in to application</h2>
+      <Notification msg={msg} />
       <form onSubmit={handleLogin}>
         <div>
           username
@@ -88,6 +101,7 @@ const App = () => {
     :
     <div>
       <h2>blogs</h2>
+      <Notification msg={msg} />
       <p>
         {user.name} logged in
         <button onClick={handleLogout}>logout</button>
