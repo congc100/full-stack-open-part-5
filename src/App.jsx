@@ -64,6 +64,22 @@ const App = () => {
     }
   }
 
+  const updateBlogLike = async (blogObject, blogId) => {
+    try {
+      await blogService.update(blogObject, blogId, user.token)
+      console.log('update OK')
+      // update display
+      const blogList = [...blogs]
+      const target = blogList.filter(b => b.id === blogId)[0]
+      const index = blogList.indexOf(target)
+      blogList[index] = { ...target, likes: blogObject.likes }
+      setBlogs(blogList)
+    } catch (exception) {
+      console.log('update blog failed')
+      notice('error', exception.response.data.error)
+    }
+  }
+
   const notice = (type, content) => {
     setMsg({ type, content })
     setTimeout(() => {
@@ -102,7 +118,11 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
       </p>
       <FormBlogCreation createBlog={createBlog} />
-      {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+      {blogs.map(blog => <Blog
+        key={blog.id}
+        blog={blog}
+        updateBlogLike={updateBlogLike}
+      />)}
     </div>
 }
 
