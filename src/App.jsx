@@ -73,6 +73,7 @@ const App = () => {
       const target = blogList.filter(b => b.id === blogId)[0]
       const index = blogList.indexOf(target)
       blogList[index] = { ...target, likes: blogObject.likes }
+      blogList.sort((a, b) => b.likes - a.likes)
       setBlogs(blogList)
     } catch (exception) {
       console.log('update blog failed')
