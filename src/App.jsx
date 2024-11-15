@@ -10,11 +10,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [msg, setMsg] = useState(null)
-  const [blogCreationVisible, setBlogCreationVisible] = useState(false)
 
   // check login token
   useEffect(() => {
@@ -54,16 +50,12 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
+  const createBlog = async (blogObject) => {
     try {
+      const { title, author, url } = blogObject
       await blogService.create({ title, author, url }, user.token)
       notice('info', `a new blog ${title} by ${author} added`)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       console.log('create new OK')
-      setBlogCreationVisible(false)
       blogService.getAll().then(blogs => setBlogs(blogs))
       console.log('blogs fetched after create')
     } catch (exception) {
@@ -109,17 +101,7 @@ const App = () => {
         {user.name} logged in
         <button onClick={handleLogout}>logout</button>
       </p>
-      <FormBlogCreation
-        handleCreate={handleCreate}
-        title={title}
-        setTitle={setTitle}
-        author={author}
-        setAuthor={setAuthor}
-        url={url}
-        setUrl={setUrl}
-        blogCreationVisible={blogCreationVisible}
-        setBlogCreationVisible={setBlogCreationVisible}
-      />
+      <FormBlogCreation createBlog={createBlog} />
       {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
     </div>
 }

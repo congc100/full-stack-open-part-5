@@ -1,14 +1,20 @@
-const FormBlogCreation = ({
-  handleCreate,
-  title,
-  setTitle,
-  author,
-  setAuthor,
-  url,
-  setUrl,
-  blogCreationVisible,
-  setBlogCreationVisible,
-}) => {
+import { useState } from 'react'
+
+const FormBlogCreation = ({ createBlog }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+  const [blogCreationVisible, setBlogCreationVisible] = useState(false)
+
+  const handleCreate = async (event) => {
+    event.preventDefault()
+    await createBlog({ title, author, url })
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    setBlogCreationVisible(false)
+  }
+
   return blogCreationVisible
     ? <>
       <h2>create new</h2>
