@@ -81,6 +81,22 @@ const App = () => {
     }
   }
 
+  const removeBlog = async (blogId) => {
+    try {
+      await blogService.remove(blogId, user.token)
+      console.log('remove OK')
+      // update display
+      const blogList = [...blogs]
+      const target = blogList.filter(b => b.id === blogId)[0]
+      const index = blogList.indexOf(target)
+      blogList.splice(index, 1)
+      setBlogs(blogList)
+    } catch (exception) {
+      console.log('remove blog failed')
+      notice('error', exception.response.data.error)
+    }
+  }
+
   const notice = (type, content) => {
     setMsg({ type, content })
     setTimeout(() => {
@@ -123,6 +139,7 @@ const App = () => {
         key={blog.id}
         blog={blog}
         updateBlogLike={updateBlogLike}
+        removeBlog={removeBlog}
       />)}
     </div>
 }
