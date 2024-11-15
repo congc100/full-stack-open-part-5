@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const FormBlogCreation = ({ createBlog }) => {
   const [title, setTitle] = useState('')
@@ -51,6 +52,10 @@ const FormBlogCreation = ({ createBlog }) => {
     : <>
       <button onClick={() => setBlogCreationVisible(true)}>new note</button>
     </>
+}
+
+FormBlogCreation.propTypes = {
+  createBlog: PropTypes.func.isRequired,
 }
 
 export default FormBlogCreation
