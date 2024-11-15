@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import FormBlogCreation from './components/FormBlogCreation'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -13,6 +14,7 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [msg, setMsg] = useState(null)
+  const [blogCreationVisible, setBlogCreationVisible] = useState(false)
 
   // check login token
   useEffect(() => {
@@ -61,6 +63,7 @@ const App = () => {
       setAuthor('')
       setUrl('')
       console.log('create new OK')
+      setBlogCreationVisible(false)
       blogService.getAll().then(blogs => setBlogs(blogs))
       console.log('blogs fetched after create')
     } catch (exception) {
@@ -106,31 +109,17 @@ const App = () => {
         {user.name} logged in
         <button onClick={handleLogout}>logout</button>
       </p>
-      <h2>create new</h2>
-      <form onSubmit={handleCreate}>
-        <div>
-          title:
-          <input
-            type='text' value={title} name='Title'
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-            type='text' value={author} name='Author'
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-            type='text' value={url} name='Url'
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type='submit'>create</button>
-      </form>
+      <FormBlogCreation
+        handleCreate={handleCreate}
+        title={title}
+        setTitle={setTitle}
+        author={author}
+        setAuthor={setAuthor}
+        url={url}
+        setUrl={setUrl}
+        blogCreationVisible={blogCreationVisible}
+        setBlogCreationVisible={setBlogCreationVisible}
+      />
       {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
     </div>
 }
